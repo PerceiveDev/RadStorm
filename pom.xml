@@ -5,6 +5,7 @@
 	<artifactId>RadStorm</artifactId>
 	<version>1.0</version>
 	<name>RadStorm</name>
+	<description>A radiation storm plugin.</description>
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
@@ -30,10 +31,5 @@
 				</includes>
 			</resource>
 		</resources>
-		<!-- Uncomment for Java 8 code -->
-		<!-- <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
-			<configuration> <source>1.8</source> <target>1.8</target> </configuration> 
-			</plugin> </plugins> -->
 	</build>
-	<description>A radiation storm plugin.</description>
 </project>
