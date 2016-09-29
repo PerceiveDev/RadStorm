@@ -1,0 +1,9 @@
+name: RadStorm
+main: me.endureblackout.radstorm.RadStorm
+version: 1.0
+description: A radiation storm plugin.
+author: [EndureBlackout]
+commands:
+  radstorm:
+    description: Main Command
+    usage: "/radstorm [start/end]"
