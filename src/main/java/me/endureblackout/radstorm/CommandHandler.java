@@ -17,7 +17,6 @@ public class CommandHandler implements CommandExecutor {
 		this.plugin = instance;
 	}
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
@@ -46,6 +45,8 @@ public class CommandHandler implements CommandExecutor {
 							p.getWorld().setStorm(false);
 							p.sendMessage(ChatColor.GREEN + "[RS] RadStorm ended!");
 							Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "[RS] RadStorm has ended. You may come out of shelter.");
+						} else {
+							p.sendMessage(ChatColor.RED + "[RS] RadStorm already ended!");
 						}
 					}
 				}

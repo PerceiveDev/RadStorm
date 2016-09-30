@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.ChatColor;
 
 public class StormHandler implements Listener {
 	
@@ -21,9 +22,25 @@ public class StormHandler implements Listener {
 	public void onWeatherChange(WeatherChangeEvent e) {
 		final World world = e.getWorld();
 		
+		new BukkitRunnable() {
+			public void run() {
+				if(CommandHandler.enabled == 1) {
+					world.setStorm(false);
+					CommandHandler.enabled = 0;
+					Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "[RS] RadStorm has ended. You may come out of shelter.");
+				}
+			}
+		}.runTaskLater(plugin, plugin.getConfig().getInt("RadStorm Between")*20);
+		
 		if(CommandHandler.enabled == 1) {
 			new BukkitRunnable() {
 				public void run() {
+					
+					if(!(world.hasStorm())) {
+						cancel();
+						world.setStorm(true);
+					}
+					
 					if(world.hasStorm()) {
 						for(Player p : Bukkit.getOnlinePlayers()) {
 							int highY = world.getHighestBlockYAt(p.getLocation());
@@ -33,13 +50,15 @@ public class StormHandler implements Listener {
 								cancel();
 							} else {	
 								if(!(highY - p.getLocation().getBlockY() >= 4) && p.getGameMode() == GameMode.SURVIVAL) {
-									p.damage(2.0);
+									p.damage(plugin.getConfig().getDouble("RadStorm Damage"));
 								}
 							}
 						}
 					}
 				}
 			}.runTaskTimer(plugin, 5*20, 5*20);
+		} else { 
+			return;
 		}
 	}
 }
