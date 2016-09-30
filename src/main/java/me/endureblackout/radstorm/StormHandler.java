@@ -30,7 +30,7 @@ public class StormHandler implements Listener {
 					Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "[RS] RadStorm has ended. You may come out of shelter.");
 				}
 			}
-		}.runTaskLater(plugin, plugin.getConfig().getInt("RadStorm Between")*20);
+		}.runTaskLater(plugin, plugin.getConfig().getInt("RadStorm Time")*20);
 		
 		if(CommandHandler.enabled == 1) {
 			new BukkitRunnable() {

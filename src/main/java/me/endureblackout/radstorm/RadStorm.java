@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,6 +34,7 @@ public class RadStorm extends JavaPlugin {
 				if(CommandHandler.enabled == 0) {
 					for(World world : Bukkit.getServer().getWorlds()) {
 						world.setStorm(true);
+						Bukkit.getServer().broadcastMessage(ChatColor.RED + "[RS] RadStorm has been initiated. Take cover!");
 					}
 				}
 			}
