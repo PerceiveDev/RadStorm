@@ -1,14 +1,13 @@
 package me.endureblackout.radstorm;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.ChatColor;
 
 public class StormHandler implements Listener {
 	
@@ -19,11 +18,11 @@ public class StormHandler implements Listener {
 	}
 
 	@EventHandler
-	public void onWeatherChange(WeatherChangeEvent e) {
-		final World world = e.getWorld();
+	public void onWeatherChange(final WeatherChangeEvent e) {
 		
 		new BukkitRunnable() {
 			public void run() {
+				World world = e.getWorld();
 				if(CommandHandler.enabled == 1) {
 					world.setStorm(false);
 					CommandHandler.enabled = 0;
@@ -35,7 +34,8 @@ public class StormHandler implements Listener {
 		if(CommandHandler.enabled == 1) {
 			new BukkitRunnable() {
 				public void run() {
-					
+					World world = e.getWorld();
+
 					if(!(world.hasStorm())) {
 						cancel();
 						world.setStorm(true);
@@ -44,14 +44,15 @@ public class StormHandler implements Listener {
 					if(world.hasStorm()) {
 						for(Player p : Bukkit.getOnlinePlayers()) {
 							int highY = world.getHighestBlockYAt(p.getLocation());
+							int currentY = p.getLocation().getBlockY();
 							
+							int difference;
+							difference = highY - currentY;
 							
 							if(!(CommandHandler.enabled == 1)) {
 								cancel();
-							} else {	
-								if(!(highY - p.getLocation().getBlockY() >= 4) && p.getGameMode() == GameMode.SURVIVAL) {
-									p.damage(plugin.getConfig().getDouble("RadStorm Damage"));
-								}
+							} else if(!(difference >= 4)){	
+								p.damage(plugin.getConfig().getDouble("RadStorm Damage"));
 							}
 						}
 					}

@@ -13,6 +13,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class RadStorm extends JavaPlugin {
 	public void onEnable() {
 		
+		new BukkitRunnable() {
+			public void run() {
+				if(CommandHandler.enabled == 0) {
+					for(World world : Bukkit.getServer().getWorlds()) {
+						CommandHandler.enabled = 1;
+						world.setStorm(true);
+
+					}
+					Bukkit.getServer().broadcastMessage(ChatColor.RED + "[RS] RadStorm has been initiated. Take cover!");
+				}
+			}
+		}.runTaskTimer(this, this.getConfig().getInt("RadStorm Between")*20, this.getConfig().getInt("RadStorm Between")*20);
+		
 		File file = new File(getDataFolder(), "config.yml");
 		if(!(file.exists())) {
 			try {
@@ -29,16 +42,7 @@ public class RadStorm extends JavaPlugin {
 		
 		getCommand("radstorm").setExecutor(new CommandHandler(this));
 		
-		new BukkitRunnable() {
-			public void run() {
-				if(CommandHandler.enabled == 0) {
-					for(World world : Bukkit.getServer().getWorlds()) {
-						world.setStorm(true);
-						Bukkit.getServer().broadcastMessage(ChatColor.RED + "[RS] RadStorm has been initiated. Take cover!");
-					}
-				}
-			}
-		}.runTaskTimer(this, this.getConfig().getInt("RadStorm Time")*20, this.getConfig().getInt("RadStorm Time")*20);
+
 	}
 	
 	private void setupConfig(FileConfiguration config) throws IOException {

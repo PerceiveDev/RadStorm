@@ -6,4 +6,3 @@ author: [EndureBlackout]
 commands:
   radstorm:
     description: Main Command
-    usage: "/radstorm [start/end]"
