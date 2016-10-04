@@ -51,7 +51,7 @@ public class StormHandler implements Listener {
 							
 							if(!(CommandHandler.enabled == 1)) {
 								cancel();
-							} else if(!(difference <= 4)){	
+							} else if(!(difference >= 4)){	
 								p.damage(plugin.getConfig().getDouble("RadStorm Damage"));
 							}
 						}
