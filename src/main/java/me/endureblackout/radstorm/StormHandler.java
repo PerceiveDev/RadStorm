@@ -48,7 +48,9 @@ public class StormHandler implements Listener {
                             int currentY = p.getLocation().getBlockY();
 
                             int difference;
-                            difference = currentY - highY;
+                            difference = highY - currentY;
+                            
+
 
                             if (!(CommandHandler.enabled == 1)) {
                                 cancel();
