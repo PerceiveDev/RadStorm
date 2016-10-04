@@ -47,11 +47,11 @@ public class StormHandler implements Listener {
 							int currentY = p.getLocation().getBlockY();
 							
 							int difference;
-							difference = highY - currentY;
+							difference = currentY - highY;
 							
 							if(!(CommandHandler.enabled == 1)) {
 								cancel();
-							} else if(!(difference >= 4)){	
+							} else if(!(difference <= 4)){	
 								p.damage(plugin.getConfig().getDouble("RadStorm Damage"));
 							}
 						}
