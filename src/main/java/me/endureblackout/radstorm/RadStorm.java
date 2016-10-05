@@ -15,18 +15,7 @@ public class RadStorm extends JavaPlugin {
 
         Runnables.init(this);
 
-        new BukkitRunnable() {
-            public void run() {
-                if (CommandHandler.enabled == 0) {
-                    for (World world : Bukkit.getServer().getWorlds()) {
-                        CommandHandler.enabled = 1;
-                        world.setStorm(true);
 
-                    }
-                    Bukkit.getServer().broadcastMessage(ChatColor.RED + "[RS] RadStorm has been initiated. Take cover!");
-                }
-            }
-        }.runTaskTimer(this, this.getConfig().getInt("RadStorm Between") * 20, this.getConfig().getInt("RadStorm Between") * 20);
 
         File file = new File(getDataFolder(), "config.yml");
         if (!(file.exists())) {
@@ -39,6 +28,19 @@ public class RadStorm extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+        
+        new BukkitRunnable() {
+            public void run() {
+                if (CommandHandler.enabled == 0) {
+                    for (World world : Bukkit.getServer().getWorlds()) {
+                        CommandHandler.enabled = 1;
+                        world.setStorm(true);
+
+                    }
+                    Bukkit.getServer().broadcastMessage(ChatColor.RED + "[RS] RadStorm has been initiated. Take cover!");
+                }
+            }
+        }.runTaskTimer(this, this.getConfig().getInt("RadStorm Between") * 20, this.getConfig().getInt("RadStorm Between") * 20);
 
         Bukkit.getServer().getPluginManager().registerEvents(new StormHandler(this), this);
 
