@@ -1,0 +1,24 @@
+# All time measurements are in seconds
+# With the default time settings it is configured to start a 7 minute storm every 30 minutes
+storm:
+    # This is how long a storm lasts, defaults to 7 minutes
+    time: 420.0
+    # How much time there is between the start of storms, defaults to 30 minutes
+    between: 1800.0
+    # How much damage the storm does
+    damage: 2.0
+
+# These are the enabled worlds
+worlds:
+- world
+- world2
+
+messages:
+    prefix: "&8[&aR&2S&8] &e"
+    storm-start: "&cRadStorm has been initiated. Take cover!"
+    storm-end: "&aRadStorm has ended. You may come out of shelter."
+    not-active: "A RadStorm wasn't active"
+    already-active: "A RadStorm is already active"
+    usage: "/radstorm <start|end|reload>"
+    reloaded: "Config reloaded"
+    no-permission: "&cYou don't have permission to do that!"

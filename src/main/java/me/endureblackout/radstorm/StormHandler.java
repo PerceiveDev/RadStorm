@@ -1,69 +1,113 @@
+/**
+ * 
+ */
 package me.endureblackout.radstorm;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class StormHandler implements Listener {
+/**
+ * @author Rayzr
+ *
+ */
+public class StormHandler extends BukkitRunnable {
 
-    RadStorm plugin;
+    private boolean        active = false;
+    private RadStorm       plugin;
 
-    public StormHandler(RadStorm instance) {
-        this.plugin = instance;
+    // Just a little variable to make sure you don't have extra runnables still
+    // waiting to run
+    private BukkitRunnable lastStopper;
+
+    public StormHandler(RadStorm plugin) {
+        this.plugin = plugin;
+        // Repeat every 5 seconds
+        runTaskTimer(plugin, 100, 100);
     }
 
-    @EventHandler
-    public void onWeatherChange(final WeatherChangeEvent e) {
-
-        Runnables.later(new BukkitRunnable() {
-            public void run() {
-                World world = e.getWorld();
-                if (CommandHandler.enabled == 1) {
-                    world.setStorm(false);
-                    CommandHandler.enabled = 0;
-                    Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "[RS] RadStorm has ended. You may come out of shelter.");
-                }
-            }
-        }, plugin.getConfig().getInt("RadStorm Time") * 20);
-
-        if (CommandHandler.enabled == 1) {
-            Runnables.repeat(new BukkitRunnable() {
-                public void run() {
-                    World world = e.getWorld();
-
-                    if (!(world.hasStorm())) {
-                        cancel();
-                        world.setStorm(true);
-                    }
-
-                    if (world.hasStorm()) {
-                        for (Player p : Bukkit.getOnlinePlayers()) {
-                            int highY = findRoof(world, p);
-                            int currentY = p.getLocation().getBlockY();
-
-                            int difference;
-                            difference = highY - currentY;
-                            
-
-
-                            if (!(CommandHandler.enabled == 1)) {
-                                cancel();
-                            } else if (!(difference >= 4)) {
-                                p.damage(plugin.getConfig().getDouble("RadStorm Damage"));
-                            }
-                        }
-                    }
-                }
-            }, 5, 5);
-        } else {
+    public void run() {
+        if (!active) {
             return;
         }
+
+        for (World world : Bukkit.getWorlds()) {
+            if (!plugin.getEnabledWorlds().contains(world.getName())) {
+                continue;
+            }
+
+            for (Player player : world.getPlayers()) {
+                int highY = findRoof(world, player);
+                int currentY = player.getLocation().getBlockY();
+
+                int difference;
+                difference = highY - currentY;
+
+                if (difference < 4) {
+                    player.damage(plugin.getConfig().getDouble("storm.damage"));
+                }
+            }
+        }
+    }
+
+    /**
+     * @return the active
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * @param active the active to set
+     * @return Whether or not the state actually changed. Returns false if (for
+     *         example) it's already active and you try to set it to active.
+     */
+    public boolean setActive(boolean active) {
+        if (this.active == active) {
+            return false;
+        }
+        this.active = active;
+        updateAll();
+        return true;
+    }
+
+    private void updateAll() {
+
+        if (active) {
+            Bukkit.broadcastMessage(plugin.getMessage("storm-start"));
+            stopLater();
+        } else {
+            Bukkit.broadcastMessage(plugin.getMessage("storm-stop"));
+            lastStopper = null;
+        }
+
+        // Make sure all the worlds are in the right state
+        for (World world : Bukkit.getWorlds()) {
+            if (!plugin.getEnabledWorlds().contains(world.getName())) {
+                continue;
+            }
+            if (active != world.hasStorm()) {
+                world.setStorm(active);
+            }
+        }
+
+    }
+
+    private void stopLater() {
+
+        // The next 3 lines are to prevent a storm getting cancelled repeatedly
+        if (lastStopper != null) {
+            lastStopper.cancel();
+        }
+
+        lastStopper = new BukkitRunnable() {
+            public void run() {
+                setActive(false);
+            }
+        };
+        lastStopper.runTaskLater(plugin, (long) (plugin.getConfig().getDouble("storm.time") * 20.0));
 
     }
 
